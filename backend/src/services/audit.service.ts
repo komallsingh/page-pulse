@@ -13,6 +13,8 @@ export const auditService = async (
             timeout: 10000,
             validateStatus:()=> true
         });
+        console.log("Status:", response.status);
+        console.log("Content-Type:", response.headers["content-type"]);
         const endTime = Date.now();
         const responseTime = endTime - startTime;
 
@@ -28,22 +30,24 @@ export const auditService = async (
         return {
             statusCode: response.status,
             responseTime,
-            title: "",
-            metaDescription: "",
-            h1Count: 0,
-            imagesWithoutAlt: 0,
-            wordCount: 0
+            title: extracted.title,
+            metaDescription: extracted.metaDescription,
+            h1Count: extracted.h1Count,
+            imagesWithoutAlt: extracted.imagesWithoutAlt,
+            wordCount: extracted.wordCount
         };
 
     } catch (error: any) {
 
-        if (error.code === "ECONNABORTED") {
-            throw new AppError("Request timed out.", 408);
-        }
+    console.log("Code:", error.code);
+    console.log("Message:", error.message);
+    console.log("Status:", error.response?.status);
+    console.log("Content-Type:", error.response?.headers?.["content-type"]);
 
-        throw new AppError(
-            "Unable to fetch website.",
-            500
-        );
+    if (error instanceof AppError) {
+        throw error;
     }
+
+    throw new AppError("Unable to fetch website.", 500);
+}
 };
