@@ -42,8 +42,10 @@ export const auditService = async (
     if (error instanceof AppError) {
         throw error;
     }
+    console.error("Error in auditService:", error);
     const errorCode = (error as { code?: string; cause?: { code?: string } }).code || (error as { cause?: { code?: string } }).cause?.code;
     const errorMessage = (error as { message?: string }).message?.toLowerCase() || "";
+    if (axios.isAxiosError(error)) {
     if (
             errorCode === "ECONNABORTED" || 
             errorCode === "ETIMEDOUT" || 
@@ -60,6 +62,7 @@ export const auditService = async (
     ) {
         throw new AppError("Address not found.", 404);
     }
+}
 
     throw new AppError(
         "Unable to fetch website.",
