@@ -32,18 +32,27 @@ function App() {
 
         setReport(response.data.data);
 
-    } catch (err: any) {
-        const statusCode = err.response?.status;
-        const backendMessage = err.response?.data?.message || 
-            err.response?.data?.error || 
-            err.message || 
-            "Something went wrong.";
-        if(statusCode){
-            setError(`Error ${statusCode}: ${backendMessage}`);
-        }else{
-            setError(backendMessage);
-        }
+    }  catch (err: any) {
+        console.error("Full Frontend Error:", err); // Check  browser console to see what this is!
 
+        const statusCode = err.response?.status;
+        
+        // If Axios received a response from the backend
+        if (statusCode) {
+            const backendMessage = 
+                err.response?.data?.message || 
+                err.response?.data?.error || 
+                "Something went wrong.";
+            setError(`Error ${statusCode}: ${backendMessage}`);
+        } 
+        // If the request was made but no response was received (like a timeout or network drop)
+        else if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+            setError("Error 408: Request timed out.");
+        } 
+        // Any other network error
+        else {
+            setError(err.message || "Something went wrong.");
+        }
     } finally {
 
         setLoading(false);
