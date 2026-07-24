@@ -33,11 +33,14 @@ function App() {
         setReport(response.data.data);
 
     } catch (err: any) {
-
-        setError(
-            err.response?.data?.message ||
-            "Something went wrong."
-        );
+        const statusCode = err.response?.status;
+        const backendMessage = err.response?.data?.message 
+        || "Something went wrong.";
+        if(statusCode){
+            setError(`Error ${statusCode}: ${backendMessage}`);
+        }else{
+            setError(backendMessage);
+        }
 
     } finally {
 
@@ -47,27 +50,41 @@ function App() {
 };
 
     return (
-        <div className="container">
+        <>
+            <div className="container">
+                <h1>PagePulse</h1>
+                <p className="subtitle">
+                    Audit any website in seconds.
+                </p>
 
-            <h1>PagePulse</h1>
+                <SearchBar
+                    url={url}
+                    loading={loading}
+                    onUrlChange={setUrl}
+                    onAudit={handleAudit}
+                />
+                
+                <ErrorAlert message={error} />
 
-            <p className="subtitle">
-                Audit any website in seconds.
-            </p>
+                {report && (
+                    <AuditCard report={report} />
+                )}
+            </div>
 
-            <SearchBar
-                url={url}
-                loading={loading}
-                onUrlChange={setUrl}
-                onAudit={handleAudit}
-            />
-            <ErrorAlert message={error} />
-
-{report && (
-    <AuditCard report={report} />
-)}
-
-        </div>
+            {/* LIVE BUILD REQUIREMENT FOOTER */}
+            <footer>
+                <p>
+                    <a href="https://digitalheroesco.com" target="_blank" rel="noopener noreferrer">
+                        Built for Digital Heroes Training Task
+                    </a>
+                </p>
+                <p>
+                    <a href="https://github.com/komallsingh/page-pulse" target="_blank" rel="noopener noreferrer" className="repo-link">
+                        View Repository
+                    </a>
+                </p>
+            </footer>
+        </>
     );
 }
 
