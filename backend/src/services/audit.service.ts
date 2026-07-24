@@ -10,7 +10,7 @@ export const auditService = async (
     try {
         const startTime = Date.now();
         const response = await axios.get(url, {
-            timeout: 10000,
+            timeout: 5000,
             validateStatus:()=> true
         });
         console.log("Status:", response.status);
