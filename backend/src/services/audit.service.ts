@@ -37,12 +37,12 @@ export const auditService = async (
             wordCount: extracted.wordCount
         };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
 
     if (error instanceof AppError) {
         throw error;
     }
-    const errorCode = error.code || error.cause?.code;
+    const errorCode = (error as { code?: string; cause?: { code?: string } }).code || (error as { cause?: { code?: string } }).cause?.code;
     if (errorCode === "ECONNABORTED") {
         throw new AppError("Request timed out.", 408);
     }
