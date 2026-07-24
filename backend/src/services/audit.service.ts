@@ -47,9 +47,11 @@ export const auditService = async (
     const errorMessage = (error as { message?: string }).message?.toLowerCase() || "";
     if (axios.isAxiosError(error)) {
     if (
-            errorCode === "ECONNABORTED" || 
-            errorCode === "ETIMEDOUT" || 
-            errorMessage.includes("timeout")
+        errorCode === "ECONNABORTED" || 
+        errorCode === "ETIMEDOUT" || 
+        errorCode === "ECONNRESET" || 
+        errorMessage.includes("timeout") ||
+        errorMessage.includes("socket hang up")
         ) {
             throw new AppError("Request timed out.", 408);
         }
