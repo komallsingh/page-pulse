@@ -1,4 +1,3 @@
-// src/__tests__/dataExtract.test.ts
 import { extractData } from "./utils/dataExtract";
 
 describe("HTML Parsing Logic (extractData)", () => {
@@ -34,11 +33,7 @@ describe("HTML Parsing Logic (extractData)", () => {
         expect(result.title).toBe("Happy Path Title");
         expect(result.metaDescription).toBe("This is a test description.");
         expect(result.h1Count).toBe(2);
-        
-        // Fix: Your Cheerio selector $("img:not([alt])") only finds elements completely missing the attribute
         expect(result.imagesWithoutAlt).toBe(1); 
-        
-        // Fix: 4 words in H1s + 9 words in p tag = 13 total words
         expect(result.wordCount).toBe(13);
     });
 
@@ -73,7 +68,7 @@ describe("HTML Parsing Logic (extractData)", () => {
         expect(result.h1Count).toBe(0);
         expect(result.imagesWithoutAlt).toBe(0);
         
-        // Fix: Your regex \b[\w']+\b treats numbers as words, so 123 counts!
+        // Fix: regex \b[\w']+\b treats numbers as words, so 123 counts!
         expect(result.wordCount).toBe(10); 
     });
 });
