@@ -43,9 +43,14 @@ export const auditService = async (
         throw error;
     }
     const errorCode = (error as { code?: string; cause?: { code?: string } }).code || (error as { cause?: { code?: string } }).cause?.code;
-    if (errorCode === "ECONNABORTED") {
-        throw new AppError("Request timed out.", 408);
-    }
+    const errorMessage = (error as { message?: string }).message?.toLowerCase() || "";
+    if (
+            errorCode === "ECONNABORTED" || 
+            errorCode === "ETIMEDOUT" || 
+            errorMessage.includes("timeout")
+        ) {
+            throw new AppError("Request timed out.", 408);
+        }
 
     if (
         errorCode === "ENOTFOUND" ||
