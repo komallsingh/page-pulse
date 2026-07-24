@@ -33,20 +33,15 @@ function App() {
         setReport(response.data.data);
 
     }  catch (err: any) {
-        // This will print the exact structure to your browser's F12 Console
-        console.error("RAW ERROR OBJECT:", err);
-
         const statusCode = err.response?.status;
-        const msg = 
-            err.response?.data?.message || 
-            err.response?.data?.error || 
-            err.message || 
-            JSON.stringify(err);
+        const backendMessage = err.response?.data?.message || err.response?.data?.error;
 
         if (statusCode) {
-            setError(`Error ${statusCode}: ${msg}`);
+            setError(`Error ${statusCode}: ${backendMessage || "Something went wrong."}`);
+        } else if (err.code === "ECONNABORTED" || err.message?.includes("timeout")) {
+            setError("Error 408: Request timed out.");
         } else {
-            setError(`Error: ${msg}`);
+            setError("Error 408: Request timed out."); // Fallback for hanging requests
         }
     }finally {
 
