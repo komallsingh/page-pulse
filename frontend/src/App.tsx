@@ -34,8 +34,10 @@ function App() {
 
     } catch (err: any) {
         const statusCode = err.response?.status;
-        const backendMessage = err.response?.data?.message 
-        || "Something went wrong.";
+        const backendMessage = err.response?.data?.message || 
+            err.response?.data?.error || 
+            err.message || 
+            "Something went wrong.";
         if(statusCode){
             setError(`Error ${statusCode}: ${backendMessage}`);
         }else{
