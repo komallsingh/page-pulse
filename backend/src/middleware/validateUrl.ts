@@ -13,29 +13,23 @@ export const validateUrl = (
         throw new AppError("URL is required.", 400);
     }
 
+    let parsedUrl: URL;
+
     try {
-
-        const parsedUrl = new URL(url);
-
-        if (
-            parsedUrl.protocol !== "http:" &&
-            parsedUrl.protocol !== "https:"
-        ) {
-            throw new AppError(
-                "Only HTTP and HTTPS URLs are allowed.",
-                400
-            );
-        }
-
+        parsedUrl = new URL(url);
     } catch {
-
-        throw new AppError(
-            "Please enter a valid URL.",
-            400
-        );
-
+    throw new AppError("Please enter a valid URL.", 400);
     }
 
+    if (
+    parsedUrl.protocol !== "http:" &&
+    parsedUrl.protocol !== "https:"
+        ) {
+    throw new AppError(
+        "Only HTTP and HTTPS URLs are allowed.",
+        400
+    );
+    }
     next();
 
 };
