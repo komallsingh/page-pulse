@@ -39,15 +39,26 @@ export const auditService = async (
 
     } catch (error: any) {
 
-    console.log("Code:", error.code);
-    console.log("Message:", error.message);
-    console.log("Status:", error.response?.status);
-    console.log("Content-Type:", error.response?.headers?.["content-type"]);
-
     if (error instanceof AppError) {
         throw error;
     }
+    const errorCode = error.code || error.cause?.code;
+    if (errorCode === "ECONNABORTED") {
+        throw new AppError("Request timed out.", 408);
+    }
 
-    throw new AppError("Unable to fetch website.", 500);
+    if (
+        errorCode === "ENOTFOUND" ||
+        errorCode === "EAI_AGAIN" ||
+        errorCode === "ECONNREFUSED"||
+        errorCode === "ERR_NAME_NOT_RESOLVED"
+    ) {
+        throw new AppError("Address not found.", 404);
+    }
+
+    throw new AppError(
+        "Unable to fetch website.",
+        500
+    );
 }
 };
